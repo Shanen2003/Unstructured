@@ -89,10 +89,10 @@ LinkedIn, but feel free to change the word inside the \[“”\] to your
 column name.
 
 It uses a playwright script which clicks on the page, and then begins
-slowly scrolling down. After a couple times of the page not scrolling
+slowly scrolling down. After a couple times of the page stops scrolling
 down, the page is saved to a folder in your files as html. LinkedIn
 class names change constantly, which can be very annoying. Instead of
-playing tag with this, I downloaded all pages html to a folder. This
+playing tag with this, I downloaded all pages’ html to a folder. This
 also allows for the account to be banned and not lose the pages scraped!
 
 The files are named after the unique url section of people’s LinkedIn
@@ -155,11 +155,11 @@ Here we now scrape the html we have downloaded. We read in each html
 file in the folder one by one. We remove all tags from it, and create a
 massive block of text of all the LinkedIn info.
 
-Here we use regex expressions to specifically select certain
-characteristics. Sometimes LinkedIn can be very annoying, as items can
-be left blank or have their orders swapped. One example is pronouns
-under the name, or when someone has multiple jobs at the same company
-the title, company, and date; positions are swapped around.
+Here we use regex to specifically select certain characteristics.
+Sometimes LinkedIn can be very annoying, as items can be left blank or
+have their orders swapped. One example is pronouns under the name, or
+when someone has multiple jobs at the same company the title, company,
+and date; positions are swapped around.
 
 It creates a new dataframe, with all our new found info. It leaves
 blanks when there is no info.
