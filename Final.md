@@ -25,22 +25,11 @@ is correct. The csv should be one column of LinkedIn URLS, with a column
 name LinkedIn.
 
 ``` python
-df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
+# df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
 
-for i in df["LinkedIn"]:
-  print(i)
+# for i in df["LinkedIn"]:
+#   print(i)
 ```
-
-    https://www.linkedin.com/in/tommy-gillan/
-    https://www.linkedin.com/in/shanenbateman/
-    https://www.linkedin.com/in/andrew-j-connelly-b40504134/
-    https://www.linkedin.com/in/aidan-sullivan11/
-    https://www.linkedin.com/in/markfalvey/
-    https://www.linkedin.com/in/adrian-figueroa/
-    https://www.linkedin.com/in/joshua-rourke/
-    https://www.linkedin.com/in/thatpong-bamrungchai-3aa108296/
-    https://www.linkedin.com/in/art-by-annora/
-    https://www.linkedin.com/in/michael-street-71880aa7/
 
 Here is the kind of annoying part to set up. I currently cannot get past
 Captchas, even if I automatically pull the log in code from my email. I

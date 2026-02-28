@@ -32,10 +32,10 @@ This is a nice way to test to make sure the csv works, and the file path is corr
 
 ```{python}
 
-df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
+# df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
 
-for i in df["LinkedIn"]:
-  print(i)
+# for i in df["LinkedIn"]:
+#   print(i)
 
 ```
 
