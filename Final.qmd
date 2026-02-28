@@ -184,7 +184,6 @@ for file in folder.glob("*.html"):
 	c+=1
 
 df_more = pd.DataFrame(rows)
-df_more
 
 ```
 
