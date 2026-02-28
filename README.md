@@ -35,10 +35,17 @@ Update the file paths and port number (same as when connecting in the command pr
 
 Your browser should begin changing, and slowly scrollign down. For each page we slowly scroll dwon. This does two things, it gives the page time to load, and on LinkedIn the page doesn't laod until you scroll past it. SO using a slow scorllign feature works perfect here. In the loop we pay attention to teh scroll height, if this does not change a couple times in a row, we know we are at the bottom of the page, and can save what we have found. 
 
-We download the page content, and use BeautifulSoup's html parser to begin parsing the extracted info. We also extract the final section of all LinkedIn URLs and save the coup using this extracted section. On LinkedIn tehse are all unqiue and (almost always) based on the person's name, so they are a great way to name the files as tehy are saved. All files are saved as html documents, that way if anything happens, such as out accoutn being banned, we still have what we have scraped so far. 
+We download the page content, and use BeautifulSoup's html parser to begin parsing the extracted info. We also extract the final section of all LinkedIn URLs and save the coup using this extracted section. On LinkedIn tehse are all unqiue and (almost always) based on the person's name, so they are a great way to name the files as tehy are saved. All files are saved as html documents, that way if anything happens, such as out accoutn being banned, we still have what we have scraped so far. LinkedIn's html tags also change, whihc makes parsing it very difficult. So downloading the html serves as a way to make it stay still!
 
-Next we extract the important info out of eahc html file. We use glob to pull all html files out, so if anythign else gets accidentally put in there no problem. 
+Next we extract the important info out of eahc html file. We use glob to pull all html files out, so if anythign else gets accidentally put in there no problem. We create a variable to keep track of which row we are on, adn add the LinkedIn URL, as well as creating a dictionaruy and list to so we can create a final dataframe when finished. 
 
+The beautifulsoup line reads in the data, and allows us to parse it. We tehn use get_text which takes out all text from teh document, and by using a new line seperator (\n), all text is on seperate lines. This makes it very easy to visually distinguish between elements. From here we have regex lines to find teh data we want. Some can get quite complicated (name and school timeline). Name had to account for Message beign above, sometimes connect being above, and then sometimes having pronouns on teh next line, and then 1st. Schools tiemline was dissifult as many did not include this, and we would often get unrealted data. This meant we have tio make sure if it included text it was 3 letters (as LinkedIn uses 3 letter month abbrevations) or only includes numbers. 
+
+Another LinkedIn issue, was hwo the order of company, role, and time were swapped if an employee worked at the same company for mutliple roles. This caused (the most confusing) if statement ever. It loosk to see if the comapny has yrs or mos (LinkedIns abbrevaitions for year and amonths) and if it does reorder teh job info to be in the correct spots. 
+
+For each LinkedIn we make a new dictionary, which is then added to a list. After the loop we turn this into a dataframe, which we can then export! 
+
+Please contact me through my LinkedIn (if it stays standing) or any conacts on my GitHub page if any issues arrise. 
 
 
 
