@@ -21,8 +21,8 @@ do this with a smaller number and try to do multiple small batches.
 LinkedIn will eventually catch on.
 
 This is a nice way to test to make sure the csv works, and the file path
-is correct. The csv should be one column of LinkedIn URLS, and a title
-called
+is correct. The csv should be one column of LinkedIn URLS, with a column
+name LinkedIn.
 
 ``` python
 df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
@@ -60,13 +60,13 @@ brave://version/
 
 Here you can see what profile to use, and make sure you use the correct
 one. Please copy the Profile Path, and paste it somewhere, as we will
-sue it shortly.
+use it shortly.
 
 Now go into task manager and close every version of the browser you will
 be using to scrape, I use brave, so I make sure they are all closed.
 
 Return to your command prompt and run this in the powershell, after
-replacing the \*\*\*\* with the port you would like, adn your file path:
+replacing the \*\*\*\* with the port you would like, and your file path:
 
 “C:Files-Browser.exe” ^ –remote-debugging-port=\_\_\_\_ ^
 –user-data-dir=“\_\_\_\_\_Data” ^ –profile-directory=“Profile \_”
@@ -93,10 +93,9 @@ slowly scrolling down. After a couple times of the page not scrolling
 down, the page is saved to a folder in your files as html. LinkedIn
 class names change constantly, which can be very annoying. Instead of
 playing tag with this, I downloaded all pages html to a folder. This
-also allows for the account to be banned and not loose the pages
-scraped!
+also allows for the account to be banned and not lose the pages scraped!
 
-The files are named after the unqiue url section of people’s LinkedIn
+The files are named after the unique url section of people’s LinkedIn
 URLs, so there is no overlap in file names.
 
 ``` python
