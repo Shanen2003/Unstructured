@@ -28,7 +28,7 @@ from pathlib import Path
 
 Here we load in the csv of the LinkedIns we would like to scrape. Please do this with a smaller number and try to do multiple small batches. LinkedIn will eventually catch on. 
 
-This is a nice way to test to make sure the csv works, and the file path is correct. The csv should be one column of LinkedIn URLS, and a title called 
+This is a nice way to test to make sure the csv works, and the file path is correct. The csv should be one column of LinkedIn URLS, with a column name LinkedIn. 
 
 ```{python}
 
@@ -49,11 +49,11 @@ Next, paste this into your URL:
 
 brave://version/
 
-Here you can see what profile to use, and make sure you use the correct one. Please copy the Profile Path, and paste it somewhere, as we will sue it shortly. 
+Here you can see what profile to use, and make sure you use the correct one. Please copy the Profile Path, and paste it somewhere, as we will use it shortly. 
 
 Now go into task manager and close every version of the browser you will be using to scrape, I use brave, so I make sure they are all closed. 
 
-Return to your command prompt and run this in the powershell, after replacing the **** with the port you would like, adn your file path:
+Return to your command prompt and run this in the powershell, after replacing the **** with the port you would like, and your file path:
 
 "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe" ^
 --remote-debugging-port=____ ^
@@ -72,9 +72,9 @@ You need to be logged into your burner LinkedIn (I'm sure you're tired of this b
 
 The first section connects and reads in the csv. It should be titled LinkedIn, but feel free to change the word inside the [""] to your column name. 
 
-It uses a playwright script which clicks on the page, and then begins slowly scrolling down. After a couple times of the page not scrolling down, the page is saved to a folder in your files as html. LinkedIn class names change constantly, which can be very annoying. Instead of playing tag with this, I downloaded all pages html to a folder. This also allows for the account to be banned and not loose the pages scraped! 
+It uses a playwright script which clicks on the page, and then begins slowly scrolling down. After a couple times of the page not scrolling down, the page is saved to a folder in your files as html. LinkedIn class names change constantly, which can be very annoying. Instead of playing tag with this, I downloaded all pages html to a folder. This also allows for the account to be banned and not lose the pages scraped! 
 
-The files are named after the unqiue url section of people's LinkedIn URLs, so there is no overlap in file names. 
+The files are named after the unique url section of people's LinkedIn URLs, so there is no overlap in file names. 
 
 ```{python}
 #| echo: true
