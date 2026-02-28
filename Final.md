@@ -170,7 +170,6 @@ df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
 # Change to the same folder path from above
 folder = Path("C:/Users/shane/Unstructured/profiles")
 
-l = []
 rows = []
 c = 0
 
@@ -178,7 +177,6 @@ for file in folder.glob("*.html"):
     row = {}
     soup = BeautifulSoup(file.read_text(encoding="utf-8"), "html.parser")
     text = soup.get_text(separator="\n", strip=True)
-    l.append(text)
 
     row["URL"] = df.loc[c, "LinkedIn"]
         
