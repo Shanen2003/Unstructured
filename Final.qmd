@@ -1,0 +1,200 @@
+
+---
+title: "LinkedinScraper.qmd"
+format:
+  html:
+    toc: true
+    toc-location: left
+    self-contained: true
+jupyter: python3
+---
+
+
+Here we have all necessary file imports in order to run the playwright scraper. 
+
+```{python}
+import asyncio
+import pandas as pd
+# pip install playwright
+# python3 -m playwright install
+from playwright.sync_api import sync_playwright, Playwright
+import re
+import time 
+from bs4 import BeautifulSoup
+from pathlib import Path
+
+
+```
+
+Here we load in the csv of the LinkedIns we would like to scrape. Please do this with a smaller number and try to do multiple small batches. LinkedIn will eventually catch on. 
+
+This is a nice way to test to make sure the csv works, and the file path is correct. The csv should be one column of LinkedIn URLS, and a title called 
+
+```{python}
+
+df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
+
+for i in df["LinkedIn"]:
+  print(i)
+
+```
+
+Here is the kind of annoying part to set up. I currently cannot get past Captchas, even if I automatically pull the log in code from my email. I didn't think to start training a CNN early enough to detect images. Instead we will use an already open browser in test mode, using connectOverCDP!
+
+You then need to find the browser account you would like to scrape with. Please make sure to log out of your LinkedIn if it is signed in. You will be banned! 
+
+You should now sign into the burner LinkedIn you do NOT care about. 
+
+Next, paste this into your URL:
+
+brave://version/
+
+Here you can see what profile to use, and make sure you use the correct one. Please copy the Profile Path, and paste it somewhere, as we will sue it shortly. 
+
+Now go into task manager and close every version of the browser you will be using to scrape, I use brave, so I make sure they are all closed. 
+
+Return to your command prompt and run this in the powershell, after replacing the **** with the port you would like, adn your file path:
+
+"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe" ^
+--remote-debugging-port=____ ^
+--user-data-dir="_____\User Data" ^
+--profile-directory="Profile _"
+
+This may need to be changed if not running in Brave. The user-data-dir is the first section of the Profile Path, and then the Profile 6 is the last section. 
+
+When this is ran it should open the correct browser! Please again make sure you are only logged into the LinkedIn you do not care about, as the next step is scraping. 
+
+
+
+Here we begin the fun parts!
+
+You need to be logged into your burner LinkedIn (I'm sure you're tired of this being mentioned), and change the files paths. 
+
+The first section connects and reads in the csv. It should be titled LinkedIn, but feel free to change the word inside the [""] to your column name. 
+
+It uses a playwright script which clicks on the page, and then begins slowly scrolling down. After a couple times of the page not scrolling down, the page is saved to a folder in your files as html. LinkedIn class names change constantly, which can be very annoying. Instead of playing tag with this, I downloaded all pages html to a folder. This also allows for the account to be banned and not loose the pages scraped! 
+
+The files are named after the unqiue url section of people's LinkedIn URLs, so there is no overlap in file names. 
+
+```{python}
+#| echo: true
+#| eval: false
+
+pw = sync_playwright().start()
+
+# Change to your port
+browser = pw.chromium.connect_over_cdp("http://127.0.0.1:****")
+
+context = browser.contexts[0] 
+page = context.pages[0] 
+
+# Change to file path
+df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
+
+# Change to column title
+for url in df["LinkedIn"]:
+
+    page.goto(url)
+
+    previousheight = 0
+
+    nochange = 0
+
+    try: 
+        page.wait_for_load_state("domcontentloaded", timeout = 120000)
+    except Exception:
+        pass
+
+    page.click("body")
+
+    while nochange < 3:
+
+        for i in range(10):
+
+            page.mouse.wheel(0, 100)
+            time.sleep(1)
+
+        current_height = page.evaluate("() => document.body.scrollHeight")
+
+        if current_height > previousheight:
+            previousheight = current_height
+            nochange = 0
+        else:
+            nochange += 1
+
+    html = page.content()
+    soup = BeautifulSoup(html, "html.parser")
+
+    data = re.findall(r"in/(.+)/$", url)
+
+    # Change the first section of this file path to your folder, then leave the /{data[0]}.html section. 
+    path = Path(f"C:/Users/shane/Unstructured/profiles/{data[0]}.html")
+    path.write_text(soup.prettify(), encoding="utf-8")
+```
+
+
+Here we now scrape the html we have downloaded. We read in each html file in the folder one by one. We remove all tags from it, and create a massive block of text of all the LinkedIn info. 
+
+Here we use regex expressions to specifically select certain characteristics. Sometimes LinkedIn can be very annoying, as items can be left blank or have their orders swapped. One example is pronouns under the name, or when someone has multiple jobs at the same company the title, company, and date; positions are swapped around. 
+
+It creates a new dataframe, with all our new found info. It leaves blanks when there is no info. 
+
+```{python}
+
+df = pd.read_csv("C:/Users/shane/Unstructured/Book1.csv")
+
+# Change to the same folder path from above
+folder = Path("C:/Users/shane/Unstructured/profiles")
+
+l = []
+rows = []
+c = 0
+
+for file in folder.glob("*.html"):
+	row = {}
+	soup = BeautifulSoup(file.read_text(encoding="utf-8"), "html.parser")
+	text = soup.get_text(separator="\n", strip=True)
+	l.append(text)
+
+	row["URL"] = df.loc[c, "LinkedIn"]
+		
+	row["Name"] = re.findall(r"^Message\s*\n(?:Connect\s*\n)?(.+)\s*\n(?:.+/.+\s*\n)?.\s*1st", text, re.MULTILINE)
+
+	row["Location"] = re.findall(r"\n(.+)\s*\n.\s*\nContact", text)
+	
+	row["Experience_Role"] = re.findall(r"^Experience\s*\n(.+)\s*\n", text, re.MULTILINE)
+
+	row["Experience_Company"] = re.findall(r"^Experience\s*\n.*\s*\n(.+)\s*\n", text, re.MULTILINE)
+
+	row["Experience_Dates"] = re.findall(r"^Experience\s*\n.*\s*\n.*\s*\n(.*)\s*\n", text, re.MULTILINE)
+
+	row["Experience_Location"] = re.findall(r"^Experience\s*\n.*\s*\n.*\s*\n.*\s*\n(.*)\s*\n", text, re.MULTILINE)
+
+	row["School"] = re.findall(r"^Education\s*\n(.+)\s*\n", text, re.MULTILINE)
+
+	row["School_Major"] = re.findall(r"^Education\s*\n.*\s*\n(.+)\s*\n", text, re.MULTILINE)
+
+	row["School_Timeline"] = re.findall(r"^Education\s*\n.*\s*\n.*\s*\n([A-Za-z]{3}?\s.+|\d+.+)\s*\n", text, re.MULTILINE)
+
+	if row["Experience_Company"] and any(x in row["Experience_Company"][0] for x in ["yrs", "mos"]):
+		row["Experience_Role"], row["Experience_Company"], row["Experience_Dates"] = row["Experience_Dates"], row["Experience_Role"], row["Experience_Company"]
+
+	rows.append(row)
+
+	c+=1
+
+df_more = pd.DataFrame(rows)
+df_more
+
+```
+
+
+
+Here we can export the data set! Now with our new info.  
+
+```{python}
+
+df_more.to_csv("C:/Users/shane/Unstructured/LinkedIn_Data.csv")
+
+
+```
